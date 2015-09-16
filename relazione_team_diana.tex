@@ -19,7 +19,7 @@ keywordstyle=\bfseries\color{green},
 commentstyle=\color{magenta},
 stringstyle=\color{black},
 identifierstyle=\color{blue},
-basicstyle=\tiny, % the size of the fonts that are used for the code      
+basicstyle=\scriptsize, % the size of the fonts that are used for the code      
 numbers=left,                   % where to put the line-numbers
 numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
 stepnumber=1,                   % the step between two line-numbers. If it is 1 each line will be numbered
@@ -57,7 +57,8 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 	robotica spaziale, nato per rappresentare l'ateneo all'interno del progetto 
 	AMALIA\footnote{http://www.amalia-teamitalia.it/}. 
 	L'attività del team è dedita principalmente allo sviluppo di un rover lunare 
-	in tutte le sue funzionalità. 
+	in tutte le sue funzionalità.
+	
 	Il rover è dotato, allo stato attuale, di un sistema di acquisizione di immagini 
 	composto da due camere Black-and-White di Point 
 	Gray\footnote{http://team-diana.github.io/en/\#!pages/blackfly\_bw\_poe\_gige\_hardware.md} 
@@ -66,15 +67,19 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 	Point Cloud, insiemi di punti dello spazio tridimensionale che descrivono la scena ripresa.
 	
 	\subsection{Obiettivi e descrizione del progetto}
-	Lo scopo del programma è generare una mesh poligonale effettuando la triangolazione di un point cloud.
+	L'obiettivo di questo progetto era di scrivere un programma il cui scopo è generare una mesh poligonale effettuando la
+	triangolazione di un point cloud. Il lavoro 
 	Il programma acquisice il nome del file contenente il point cloud e il nome del file di output da linea di comando,
 	i punti vengono letti dal file e processati da una serie di algoritmi di filtraggio. 
 	Successivamente viene applicato lo smoothing delle superfici, durante il quale viene effettuato anche il calcolo delle
 	normali, in ultimo l'algoritmo di ricostruzione dei triangoli elabora il point cloud, la mesh così generata viene quindi
 	scritta sul file di output.  
+	
 	Il software è scritto in C++, per lo sviluppo è stato utilizzato l'IDE Qt Creator\footnote{http://wiki.qt.io/Qt\_Creator},
 	mentre per le strutture dati e gli algoritmi per il processing del point cloud è stata utilizzata la libreria
-	pcl\footnote{http://pointclouds.org/about/}. 	
+	pcl\footnote{http://pointclouds.org/about/}.	
+	Il codice sorgente completo del programma è disponibile all'indirizzo: 
+	https://github.com/ilmessere/point-cloud-triangulation	
 	
 \clearpage
 \section{Il programma}
@@ -93,8 +98,7 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 	#define PARAM_MAX_SURFACE_ANGLE 3
 	#define PARAM_MIN_ANGLE 4
 	#define PARAM_MAX_ANGLE 5
-	#define PARAM_NORMAL_CONSISTENCY 6
-	
+	#define PARAM_NORMAL_CONSISTENCY 6	
 	#define DEFAULT_SEARCH_RADIUS 0.025
 	#define DEFAULT_MULTIPLIER 2.5
 	#define DEFAULT_MAX_NEAREST_NEIGHBORS 100
@@ -137,7 +141,8 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 	dichiara soltanto 3 metodi utili per applicare l'algoritmo e settarne o leggerne i parametri.
 	I parametri sono identificati da delle costanti numeriche e sono trattati come dei double.
 	L'effettiva implementazione dei filtri è realizzata con 2 sottoclassi di PointCloudFilter: PCVoxelGridFilter
-	e PCStatisticalOutlierRemoval. 
+	e PCStatisticalOutlierRemoval.
+	\ 
 	\begin{figure}[H]
 	\begin{lstlisting}
 	class PointCloudFilter
@@ -209,7 +214,8 @@ int main(int argc,char **argv)
     	}
     	\caption{confronto fra i tempi di esecuzione con e senza downsample}
     	\label{fig:time_comparison}
-		\end{figure}		
+		\end{figure}	
+		\clearpage	
 		Per realizzare il downsample del point cloud è stato utilizzato l'algoritmo di voxel grid filtering.
 		Questo algoritmo funziona suddividendo lo spazio in una griglia di voxel, piccole unità di volume, tutti i punti
 		all'interno di un voxel vengono approssimati dal loro baricentro.
@@ -327,7 +333,7 @@ void PCStatisticalOutlierRemoval::apply(pcl::PointCloud<pcl::PointXYZ>::Ptr clou
         	\includegraphics[width=13cm]{pics/table_scene_mesh.png}
         	\label{fig:mesh}
     	}
-    	\caption{il point cloud non filtrato (a) e la mesh (b)}
+    	\caption{il point cloud non filtrato (a) e la mesh generata dal programma (b)}
     	\label{fig:noise_comparison}
 		\end{figure}
 	\clearpage
@@ -336,8 +342,8 @@ void PCStatisticalOutlierRemoval::apply(pcl::PointCloud<pcl::PointXYZ>::Ptr clou
 	un resample del cloud e sul'iterpolazione polinomiale, questa elaborazione dovrebbe contibuire a ridurre il rumore e i
 	piccoli difetti del data set, inoltre l'algoritmo di triangolazione ha un risultato migliore se effettuato su superfici
 	regolari. Il parametro fondamentale di questo algoritmo è il raggio di ricerca, il raggio della sfera usata per cercare i
-	vicini su cui effettuare il fit polinomiale, per i restanti parametri è stato lasciato il valore di default specificato
-	dalla libreria.
+	vicini, su cui effettuare il fit polinomiale, il metodo $setComputeNormals(true)$ serve per richiedere il calcolo
+	delle normali, mentre, per i restanti parametri si è lasciato che la libreria utilizzase i valori di default.
 	\begin{figure}[H]
 	\begin{lstlisting}
 	void PointCloudTriangulation::surfaceSmoothing(){
@@ -357,23 +363,35 @@ void PCStatisticalOutlierRemoval::apply(pcl::PointCloud<pcl::PointXYZ>::Ptr clou
 	\end{lstlisting}
 	\caption{$surfaceSmoothing()$ nella classe PointCloudTriangulation}
 	\label{mls}
-	\end{figure}	 
+	\end{figure}	
+	\clearpage 
 		\subsubsection{Normal Estimation}
-		L'algoritmo di surface smoothing si occupa anche di effettuare il calcolo delle normali, nelle fasi 
-		iniziali dello sviluppo per il surface smoothing era stato utilizzato lo stesso approccio adottato con i filtri,
-		le normali venivano quindi calcolate immediatamente dopo la lettura dei dati dal file, questo per avere una
-		coerenza sui tipi di dato su cui operano i filtri, ciò comportava un tempo di elaborazione più lungo 
-		e una maggiore complessita del codice che doveva gestire anche i parametri dell'algoritmo di normal estimation.
+		L'algoritmo di surface smoothing si occupa anche di effettuare il calcolo delle normali, necessarie all'algoritmo di
+		triangolazione.
+		Nelle fasi iniziali dello sviluppo per il surface smoothing era stato utilizzato lo stesso approccio adottato con i
+		filtri: era stata creata una classe che implementasse i metodi di PointCloudFilter e le normali venivano calcolate
+		immediatamente dopo la lettura dei dati dal file, questo era necessario affinche i filtri potessero operare tutti 
+		sullo stesso tipo di dato, pcl::PointCloud<pcl::PointNormal>; ciò comportava un tempo di elaborazione più lungo,
+		perché il calcolo delle normali veniva effettuato sui dati non filtrati, e una maggiore complessita del codice 
+		che doveva gestire anche i parametri dell'algoritmo di normal estimation.
+		Per questi motivi e per il fatto che la libreria PCL non considera il surface smoothing come un filtro,
+		l'algoritmo è stato integrato nella classe PointCloudTriangulation, e il calcolo delle normali è stato delegato
+		al surface smoothing stesso.
+		Il resample del point cloud dovrebbe inoltre dare risultati migliori e generare delle normali meno soggette 
+		al rumore e alle imperfezioni del data set.
 	\clearpage
 	\subsection{Greedy Projection Triangulation}
 	Il core del programma consiste nella generazione una mesh poligonale a partire da un point cloud con le normali.
-	Per lo scopo viene utilizzato l'algoritmo di greedy projection triangulation, questo metodo si basa sulla triangolazione
-	locale dei vicini di un punto, che vengono proiettati lungo la normale del punto stesso, i punti non ancora connessi
-	vengono collegati. Il metodo ha numerosi parametri: "maximum nearest neighbors" specifica il numero massimo di vicini,
+	Per lo scopo viene utilizzato l'algoritmo di greedy projection triangulation, questo metodo si basa sul tenere una
+	lista di punti dalla quale accrescere la mesh ed estenderla finchè tutti i punti sono connessi, la triangolazione
+	viene effettuata localmente: i vicini di un punto vengono proiettati lungo la normale del punto stesso, i punti non
+	ancora connessi vengono collegati. 
+	
+	Il metodo ha numerosi parametri: "maximum nearest neighbors" specifica il numero massimo di vicini,
 	il "multiplier" specifica la massima distanza per la quale un punto può essere considerato un vicino, relativa al punto
 	a distanza minima, il "search radius" è il raggio di ricerca per i vicini e limita la dimensione massima dei lati dei 
-	triangoli, "minimum angle" e "maximum angle" definiscono il massimo e il minimo valore per gli angoli all'interno dei 
-	triangoli, "maximum surface angle" specifica il massimo angolo di deviazione tra la normale di un punto e quella di
+	triangoli, "minimum angle" e "maximum angle" definiscono il massimo e il minimo valore per gli angoli all'interno di 
+	ciascun triangolo, "maximum surface angle" specifica il massimo angolo di deviazione tra la normale di un punto e quella di
 	un suo vicino affinché questo possa essere considerato per la triangolazione.
 	\begin{figure}[H]
 	\begin{lstlisting}
@@ -403,6 +421,13 @@ void PCStatisticalOutlierRemoval::apply(pcl::PointCloud<pcl::PointXYZ>::Ptr clou
 	\caption{il metodo $reconstruct()$ della classe PointCloudTriangulation}
 	\label{reconstruct}
 	\end{figure}
+	\begin{figure}
+	\centering
+	\subfigure[]{\includegraphics[width=13cm]{pics/mesh.png}}
+	\subfigure[]{\includegraphics[width=13cm]{pics/mesh2.png}}
+	\caption{la mesh poligonale ottenuta dalla triangolazione}
+	\label{output}
+	\end{figure}
 	\clearpage
 	
 	
@@ -410,7 +435,9 @@ void PCStatisticalOutlierRemoval::apply(pcl::PointCloud<pcl::PointXYZ>::Ptr clou
 Questo lavoro ha richiesto molto tempo, sopratutto per la ricerca e la comprensione degli algoritmi e dei loro 
 parametri, tuttavia non è da intendersi come un progetto concluso:
 sono possibili numerosi sviluppi e modifiche e il software è in continuo aggiornamento, è inoltre necessario 
-efettuare dei test per affinare i valori dei parametri e per adattarli ai dati acquisiti dal rover.
+efettuare dei test più approfonditi per affinare i valori dei parametri e migliorare la qualità dell'output.
+Sarà necessario anche effettuare dei test sui dati acquisiti dal rover, per poter tarare i valori di default
+in modo da ottenere un risultato migliore sui suoi point cloud.
 	\subsection{Sviluppi futuri}
 	La prima necessità che emerge dall'utilizzo del programma è quella di una più facile gestione dei parametri, 
 	infatti, seppure l'approccio object oriented ne facilita l'utilizzo, la configurazione dei valori è statica e
@@ -418,10 +445,10 @@ efettuare dei test per affinare i valori dei parametri e per adattarli ai dati a
 	con lettura da file sembra la via più efficace. Per un eventuale file di configurazione stiamo valutando, 
 	al momento, due formati: xml e YALM\footnote{http://yaml.org/}.
 	
-	Il passo successivo dello sviluppo sarà quello dell'integrazione con ROS\footnote{http://www.ros.org/} e della creazione di un nodo 
-	in grado di ricevere i point cloud rilevati dal rover ed elaborarli, enventualmente in tempo reale, con la possibilità di 
-	effettuare tutta la catena per la triangolazione, o magari di effettuare solo un live filtering in modo da pulire i 
-	dati per altre applicazioni.
+	Il passo successivo dello sviluppo sarà quello dell'integrazione con ROS\footnote{http://www.ros.org/} e della creazione di
+	un nodo in grado di ricevere i point cloud rilevati dal rover ed elaborarli, enventualmente in tempo reale, con la
+	possibilità di effettuare tutta la catena di esecuzione per la triangolazione, o, magari, di effettuare solo un live
+	filtering in modo da pulire i dati e renderli più maneggevoli per altre applicazioni.
 	\subsection{Conclusioni}
 	Questo lavoro, e in generale tutta l'esperienza con il team DIANA, mi ha permesso di esplorare, anche se superficialmente, 
 	il mondo della computer vision, ho acquisito inoltre una maggiore familiarità con il linguaggio C++, con le librerie 
