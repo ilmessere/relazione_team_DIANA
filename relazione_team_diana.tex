@@ -64,8 +64,16 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 	Gray\footnote{http://team-diana.github.io/en/\#!pages/blackfly\_bw\_poe\_gige\_hardware.md} 
 	e da un sensore Mesa SR4500 ToF	camera\footnote{http://team-diana.github.io/en/\#!pages/sr4500.md}.
 	Questa strumentazione permette al sistema di effettuare delle riprese in cui vengono acquisiti dei 
-	Point Cloud, insiemi di punti dello spazio tridimensionale che descrivono la scena ripresa.
+	Point Cloud.
 	
+	\subsection{I point-cloud}
+	Un point cloud è un inseme di punti dello spazio tridimensionale, espressi secondo un sistema di coordinate, 
+	che rappresenta la superficie esterna di un oggetto.
+	I point cloud sono generalmente acquisiti scansionando delle superfici con apparecchiature quali laser scanner 3D, stereo
+	camere e camere ToF, come nel caso del nostro rover. I point cloud trovano un largo impiego nelle applicazioni riguardanti
+	la robotica, tuttavia sono inadatti ad un utilizzo diretto nella maggior parte delle applicazioni 3D e vengono spesso
+	convertiti in mesh poligonali. 
+	\clearpage
 	\subsection{Obiettivi e descrizione del progetto}
 	L'obiettivo di questo progetto era di scrivere un programma il cui scopo è generare una mesh poligonale effettuando la
 	triangolazione di un point cloud. Il lavoro 
@@ -79,7 +87,15 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 	mentre per le strutture dati e gli algoritmi per il processing del point cloud è stata utilizzata la libreria
 	pcl\footnote{http://pointclouds.org/about/}.	
 	Il codice sorgente completo del programma è disponibile all'indirizzo: 
-	https://github.com/ilmessere/point-cloud-triangulation	
+	https://github.com/ilmessere/point-cloud-triangulation.
+	   	
+	\subsection{I vantaggi delle mesh}
+	Convertire un point cloud in una superfice 3D porta numerosi vantaggi: la maggior parte degli algoritmi standard di grafica
+	3D sono stati sviluppati e ottimizzati per lavorare con le mesh poligonali, l'utilizzo di mesh consente anche di migliorare 
+	notevolmente le performance di algoritmi di path-finding e collision checking. Altri grossi vantaggi si hanno poi dal punto
+	di vista della visualizzazione, infatti le mesh danno un'immagine più realistica, alla quale si ha la possibilità di
+	aggiungere delle texture per migliorarne ulteriormente la resa grafica, inolte un'altro importante vantaggio è la riduzione
+	della memoria necessaria per la visualizzazione dell'entità. 
 	
 \clearpage
 \section{Il programma}
@@ -165,6 +181,7 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 	PCStatisticalOutlierRemoval e aggiunti a all'oggetto triangulation assegnandogli un identificatore di
 	tipo string. I due filtri sono quindi applicati sul point cloud e, dopo il surface smoothing, 
 	$triangulation\rightarrow reconstruct()$ genera la mesh poligonale, che viene quindi salvata sul file di output.
+	Per ragioni di brevità tutte le righe riguardanti la deallocazione dinamica della memoria sono state tralasciate.
 	\begin{figure}[H]
 	\begin{lstlisting}
 int main(int argc,char **argv)
