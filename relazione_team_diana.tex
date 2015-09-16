@@ -94,8 +94,8 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 	3D sono stati sviluppati e ottimizzati per lavorare con le mesh poligonali, l'utilizzo di mesh consente anche di migliorare 
 	notevolmente le performance di algoritmi di path-finding e collision checking. Altri grossi vantaggi si hanno poi dal punto
 	di vista della visualizzazione, infatti le mesh danno un'immagine più realistica, alla quale si ha la possibilità di
-	aggiungere delle texture per migliorarne ulteriormente la resa grafica, inolte un'altro importante vantaggio è la riduzione
-	della memoria necessaria per la visualizzazione dell'entità. 
+	aggiungere delle texture per migliorarne ulteriormente la resa grafica, inolte un altro importante vantaggio è la riduzione
+	della memoria necessaria per la visualizzazione delle diverse entità. 
 	
 \clearpage
 \section{Il programma}
@@ -181,7 +181,7 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 	PCStatisticalOutlierRemoval e aggiunti a all'oggetto triangulation assegnandogli un identificatore di
 	tipo string. I due filtri sono quindi applicati sul point cloud e, dopo il surface smoothing, 
 	$triangulation\rightarrow reconstruct()$ genera la mesh poligonale, che viene quindi salvata sul file di output.
-	Per ragioni di brevità tutte le righe riguardanti la deallocazione dinamica della memoria sono state tralasciate.
+	Per ragioni di brevità tutte le righe riguardanti la deallocazione dinamica della memoria sono state tralasciate in questo documento.
 	\begin{figure}[H]
 	\begin{lstlisting}
 int main(int argc,char **argv)
@@ -463,7 +463,7 @@ in modo da ottenere un risultato migliore sui suoi point cloud.
 	al momento, due formati: xml e YAML\footnote{http://yaml.org/}.
 	
 	Il passo successivo dello sviluppo sarà quello dell'integrazione con ROS\footnote{http://www.ros.org/} e della creazione di
-	un nodo in grado di ricevere i point cloud rilevati dal rover ed elaborarli, enventualmente in tempo reale, con la
+	un nodo in grado di ricevere i point cloud rilevati dal rover ed elaborarli, eventualmente in tempo reale, con la
 	possibilità di effettuare tutta la catena di esecuzione per la triangolazione, o, magari, di effettuare solo un live
 	filtering in modo da pulire i dati e renderli più maneggevoli per altre applicazioni.
 	\subsection{Conclusioni}
