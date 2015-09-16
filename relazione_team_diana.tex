@@ -76,8 +76,8 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 	\clearpage
 	\subsection{Obiettivi e descrizione del progetto}
 	L'obiettivo di questo progetto era di scrivere un programma il cui scopo è generare una mesh poligonale effettuando la
-	triangolazione di un point cloud. Il lavoro 
-	Il programma acquisice il nome del file contenente il point cloud e il nome del file di output da linea di comando,
+	triangolazione di un point cloud. 
+  Il programma acquisice il nome del file contenente il point cloud e il nome del file di output da linea di comando,
 	i punti vengono letti dal file e processati da una serie di algoritmi di filtraggio. 
 	Successivamente viene applicato lo smoothing delle superfici, durante il quale viene effettuato anche il calcolo delle
 	normali, in ultimo l'algoritmo di ricostruzione dei triangoli elabora il point cloud, la mesh così generata viene quindi
@@ -102,7 +102,7 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 	\subsection{Approccio Object Oriented}
 	Il programma è stato sviluppato seguendo l'approccio della programmazione orientata agli oggetti: 
 	una facade class, PointCloudTriangulation, espone al main le funzioni per la lettura  e l'elaborazione del point cloud
-	e per la gestione dei filtri, che sono immagazinati internamente con una mappa che associa una stringa, 
+	e per la gestione dei filtri, che sono immagazzinati internamente con una mappa che associa una stringa, 
 	il nome del filtro, ad un puntatore generico a PointCloudFilter.	
 	La classe espone anche le funzioni per effettuare la triangolazione e per salvarne il risultato su file, sono
 	inoltre definiti i valori di default dei parametri della triangolazione.
@@ -210,13 +210,13 @@ int main(int argc,char **argv)
 }
 	\end{lstlisting}
 	\label{fig:main}
-	\caption{il main del programmga}	
+	\caption{il main del programma}	
 	\end{figure}
 	\clearpage
 	\subsection{I filtri}
 		\subsubsection{Voxel Grid Filter}
 		Il tempo di calcolo è stato il primo problema incontrato durante lo sviluppo; infatti
-		il tempo necessario per l'esecuzione di surface smoothin e triangolazione su un point cloud di 460400 punti è
+		il tempo necessario per l'esecuzione di surface smoothing e triangolazione su un point cloud di 460400 punti è
 		di circa 2 minuti, mentre applicando tutte le elaborazioni dopo il downsample,
 		il tempo di esecuzione è sceso al di sotto dei 10 secondi, spesi perlopiù nella fase di lettura del file.
 		\begin{figure}[H]
@@ -321,7 +321,7 @@ private:
 		Il principio di funzionamento dell'algoritmo si basa sul valutare punto per punto la distanza media da tutti i suoi $n$
 		vicini, la distribuzione risultante viene considerata come una gaussiana con una media e una deviazione standard
 		$\sigma$, tutti i punti appartenenti al vicinato la cui distanza supera il valore $m\times\sigma$ sono considerati
-		outlier e rimossi dall'insieme. 
+		outliers e rimossi dall'insieme. 
 		I parametri del filtro sono il numero $n$ di vicini da considerare e il moltiplicatore $m$ della deviazione standard, 
 		i valori scelti come default sono $n=50$ e $m=1.0$, il filtro rimuove quindi tutti i punti la cui
 		distanza supera un $\sigma$.
@@ -355,12 +355,12 @@ void PCStatisticalOutlierRemoval::apply(pcl::PointCloud<pcl::PointXYZ>::Ptr clou
 		\end{figure}
 	\clearpage
 	\subsection{Surface Smoothing}
-	L'algoritmo di surface smoothing "mooving least squares" si occupa di fare una ricostruzione delle superfici basata su 
-	un resample del cloud e sul'iterpolazione polinomiale, questa elaborazione dovrebbe contibuire a ridurre il rumore e i
-	piccoli difetti del data set, inoltre l'algoritmo di triangolazione ha un risultato migliore se effettuato su superfici
+	L'algoritmo di surface smoothing "moving least squares" si occupa di fare una ricostruzione delle superfici basata su 
+	un resample del cloud e sull'interpolazione polinomiale, questa elaborazione dovrebbe contribuire a ridurre il rumore e i 
+  piccoli difetti del data set, inoltre l'algoritmo di triangolazione ha un risultato migliore se effettuato su superfici
 	regolari. Il parametro fondamentale di questo algoritmo è il raggio di ricerca, il raggio della sfera usata per cercare i
 	vicini, su cui effettuare il fit polinomiale, il metodo $setComputeNormals(true)$ serve per richiedere il calcolo
-	delle normali, mentre, per i restanti parametri si è lasciato che la libreria utilizzase i valori di default.
+	delle normali, mentre per i restanti parametri si è lasciato che la libreria utilizzasse i valori di default.
 	\begin{figure}[H]
 	\begin{lstlisting}
 	void PointCloudTriangulation::surfaceSmoothing(){
@@ -388,8 +388,8 @@ void PCStatisticalOutlierRemoval::apply(pcl::PointCloud<pcl::PointXYZ>::Ptr clou
 		Nelle fasi iniziali dello sviluppo per il surface smoothing era stato utilizzato lo stesso approccio adottato con i
 		filtri: era stata creata una classe che implementasse i metodi di PointCloudFilter e le normali venivano calcolate
 		immediatamente dopo la lettura dei dati dal file, questo era necessario affinche i filtri potessero operare tutti 
-		sullo stesso tipo di dato, pcl::PointCloud<pcl::PointNormal>; ciò comportava un tempo di elaborazione più lungo,
-		perché il calcolo delle normali veniva effettuato sui dati non filtrati, e una maggiore complessita del codice 
+    sullo stesso tipo di dato, pcl::PointCloud\textless pcl::PointNormal\textgreater; ciò comportava un tempo di elaborazione più lungo,
+		perché il calcolo delle normali veniva effettuato sui dati non filtrati, e una maggiore complessit\`a del codice 
 		che doveva gestire anche i parametri dell'algoritmo di normal estimation.
 		Per questi motivi e per il fatto che la libreria PCL non considera il surface smoothing come un filtro,
 		l'algoritmo è stato integrato nella classe PointCloudTriangulation, e il calcolo delle normali è stato delegato
@@ -404,7 +404,7 @@ void PCStatisticalOutlierRemoval::apply(pcl::PointCloud<pcl::PointXYZ>::Ptr clou
 	viene effettuata localmente: i vicini di un punto vengono proiettati lungo la normale del punto stesso, i punti non
 	ancora connessi vengono collegati. 
 	
-	Il metodo ha numerosi parametri: "maximum nearest neighbors" specifica il numero massimo di vicini,
+	Il metodo ha numerosi parametri: "maximum nearest neighbours" specifica il numero massimo di vicini,
 	il "multiplier" specifica la massima distanza per la quale un punto può essere considerato un vicino, relativa al punto
 	a distanza minima, il "search radius" è il raggio di ricerca per i vicini e limita la dimensione massima dei lati dei 
 	triangoli, "minimum angle" e "maximum angle" definiscono il massimo e il minimo valore per gli angoli all'interno di 
@@ -449,10 +449,10 @@ void PCStatisticalOutlierRemoval::apply(pcl::PointCloud<pcl::PointXYZ>::Ptr clou
 	
 	
 \section{Considerazioni e Sviluppi futuri}
-Questo lavoro ha richiesto molto tempo, sopratutto per la ricerca e la comprensione degli algoritmi e dei loro 
+Questo lavoro ha richiesto molto tempo, soprattutto per la ricerca e la comprensione degli algoritmi e dei loro 
 parametri, tuttavia non è da intendersi come un progetto concluso:
 sono possibili numerosi sviluppi e modifiche e il software è in continuo aggiornamento, è inoltre necessario 
-efettuare dei test più approfonditi per affinare i valori dei parametri e migliorare la qualità dell'output.
+effettuare dei test più approfonditi per affinare i valori dei parametri e migliorare la qualità dell'output.
 Sarà necessario anche effettuare dei test sui dati acquisiti dal rover, per poter tarare i valori di default
 in modo da ottenere un risultato migliore sui suoi point cloud.
 	\subsection{Sviluppi futuri}
@@ -460,7 +460,7 @@ in modo da ottenere un risultato migliore sui suoi point cloud.
 	infatti, seppure l'approccio object oriented ne facilita l'utilizzo, la configurazione dei valori è statica e
 	bisogna ricompilare il programma ogni volta che si effettua una modifica, per questo motivo una configurazione
 	con lettura da file sembra la via più efficace. Per un eventuale file di configurazione stiamo valutando, 
-	al momento, due formati: xml e YALM\footnote{http://yaml.org/}.
+	al momento, due formati: xml e YAML\footnote{http://yaml.org/}.
 	
 	Il passo successivo dello sviluppo sarà quello dell'integrazione con ROS\footnote{http://www.ros.org/} e della creazione di
 	un nodo in grado di ricevere i point cloud rilevati dal rover ed elaborarli, enventualmente in tempo reale, con la
